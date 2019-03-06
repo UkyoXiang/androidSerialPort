@@ -1,38 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.kongqw.serialport.SerialPortActivity">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        tools:context="com.kongqw.serialport.SerialPortActivity">
 
-        <EditText
-            android:id="@+id/et_send_content"
+        <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:gravity="top"
-            android:hint="请输入发送内容，内容转 byte[] 发送"
-            android:minLines="5" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onSend"
-            android:text="发送" />
+            <EditText
+                android:id="@+id/et_send_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="top"
+                android:hint="请输入发送内容，内容转 byte[] 发送"
+                android:minLines="5" />
 
-        <TextView
-            android:id="@+id/textView_receive"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onSend"
+                android:text="发送" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/button_receive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
 
 
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

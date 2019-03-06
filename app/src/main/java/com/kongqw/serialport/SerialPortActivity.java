@@ -1,12 +1,14 @@
 package com.kongqw.serialport;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +24,8 @@ import java.util.Arrays;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.colorSpace;
 import static java.lang.Thread.sleep;
 
 //宣告一個類別為 SerialPortActivity 且繼承自 AppCompatActivity
@@ -30,7 +34,7 @@ public class SerialPortActivity extends AppCompatActivity implements OnOpenSeria
     private static final String TAG = SerialPortActivity.class.getSimpleName();
     public static final String DEVICE = "device";
     private SerialPortManager mSerialPortManager;
-    private TextView mReceiveTextView;
+    private Button mReceiveButton;
     private ByteBuf buffer = Unpooled.buffer(1024 * 1000);
 
     //設定簡單模式下封包長度
@@ -56,7 +60,7 @@ public class SerialPortActivity extends AppCompatActivity implements OnOpenSeria
             finish();
             return;
         }
-        mReceiveTextView = (TextView) findViewById(R.id.textView_receive);
+        mReceiveButton = (Button) findViewById(R.id.button_receive);
 
         //將SerialPortManager 實體化(instantiate)
         mSerialPortManager = new SerialPortManager();
@@ -64,6 +68,7 @@ public class SerialPortActivity extends AppCompatActivity implements OnOpenSeria
         // 打开串口
         boolean openSerialPort = mSerialPortManager.setOnOpenSerialPortListener(this)
                 .setOnSerialPortDataListener(new OnSerialPortDataListener() {
+
                     @Override
                     public void onDataReceived(byte[] data) {
                         Log.v(TAG, "接收 " + byteArrayToHexString(data));
@@ -139,20 +144,33 @@ public class SerialPortActivity extends AppCompatActivity implements OnOpenSeria
                                         bytesTemp3[2] = (byte) 0x25;
                                         bytesTemp3[3] = (byte) 0x06;
                                         System.arraycopy(bytesTemp2, 0, bytesTemp3, 4, bytesTemp2.length);
-                                        final byte[] finalBytes = bytesTemp3;
 
-                                        //將陣列finalBytes不斷更新顯示在mReceiveTextView
-                                        //每0.1秒更新送出一次
+                                        //宣告byte bytesTemp4,存入陣列bytesTemp3第九組數值
+                                        //宣告不可變byte finaBytes,存入bytesTemp4
+                                        byte bytesTemp4 = bytesTemp3[9];
+                                        final byte finalBytes = bytesTemp4;
+
+                                        //宣告整數mColor=0
+                                        //假如finalBytes=0x10,則顯示黑色
+                                        int mColor = 0;
+
+                                        if ((finalBytes) == (0x10)) {
+                                            mColor = Color.BLACK;
+                                        } else if ((finalBytes) == 0x01) {
+                                            mColor = Color.RED;
+                                        } else if ((finalBytes) == 0x20) {
+                                            mColor = Color.GREEN;
+                                        } else if ((finalBytes) == 0x02) {
+                                            mColor = Color.YELLOW;
+                                        }
+
+                                        final int finalColor = mColor;
+
+                                        //更新UI顯示介面
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                mReceiveTextView.append(byteArrayToHexString(finalBytes) + "\r\n");
-                                                try {
-                                                    sleep(100);
-                                                } catch (InterruptedException e) {
-                                                    e.printStackTrace();
-                                                }
-
+                                                mReceiveButton.setBackgroundColor(finalColor);
                                             }
                                         });
 
@@ -198,6 +216,16 @@ public class SerialPortActivity extends AppCompatActivity implements OnOpenSeria
         for (byte b : bytes) {
             sb.append(String.format("%02x", b & 0xff));
         }
+        //for()從bytes陣列中,從陣列第一個值取到最後一個值
+        //append()將字串接在字串的最後方
+        //String.format("%02X",i)取兩位數的16進制
+        //0x表示是16進制,ff是兩個16進制的數
+        return sb.toString();
+    }
+
+    public static String byteToHexString(final byte b) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%02x", b & 0xff));
         //for()從bytes陣列中,從陣列第一個值取到最後一個值
         //append()將字串接在字串的最後方
         //String.format("%02X",i)取兩位數的16進制
