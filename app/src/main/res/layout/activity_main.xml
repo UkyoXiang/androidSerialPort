@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="Setiing"
+        android:id="@+id/btnSetting"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="當前歌曲："
+        android:textSize="35sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtSongName"
+        android:hint="是不是這樣的夜晚你才會這樣的想起我"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="歌曲時間："
+        android:textSize="35sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtSongTime"
+        android:hint="00:00"
+        />
+
+
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="126dp"
+        android:layout_height="87dp"
+        android:text="START" />
+
+</LinearLayout>

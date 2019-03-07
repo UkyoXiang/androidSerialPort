@@ -1,7 +1,12 @@
 package com.kongqw.serialport;
 
+import android.app.Activity;
+import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
+import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,12 +41,24 @@ public class SerialPortActivity extends AppCompatActivity implements OnOpenSeria
     private SerialPortManager mSerialPortManager;
     private Button mReceiveButton;
     private ByteBuf buffer = Unpooled.buffer(1024 * 1000);
+    private MyService mMyServ = null;
+
+    private ServiceConnection mServConn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mMyServ = ((MyService.LocalBinder) service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
 
     //設定簡單模式下封包長度
     //被宣告static的變數或方法 不會讓物件各自擁有，而是類別所擁有
     private static final int PACKAGE_LEN = 11;
-
-
     //@Override是一個annotation(註解),onCreate()是要複寫原本母類別
     //的function,強化母類別AppCompatActivity裡就已經有的onCreate()
     //super.onCreate(),super代表母類別
@@ -72,6 +89,9 @@ public class SerialPortActivity extends AppCompatActivity implements OnOpenSeria
                     @Override
                     public void onDataReceived(byte[] data) {
                         Log.v(TAG, "接收 " + byteArrayToHexString(data));
+                        mMyServ = null;
+                        Intent it = new Intent(SerialPortActivity.this, MyService.class);
+                        startService(it);
 
 //                        Log.i(TAG, "onDataReceived [ byte[] ]: " + Arrays.toString(bytes));
 //
@@ -85,7 +105,6 @@ public class SerialPortActivity extends AppCompatActivity implements OnOpenSeria
 //                                Log.v(TAG,"接收\n%s" + new String(finalBytes));
 //                            }
 //                        });
-
 
                         //假如data不是空的 而且資料長度大於0
                         //就把資料寫進緩衝器
@@ -166,7 +185,7 @@ public class SerialPortActivity extends AppCompatActivity implements OnOpenSeria
 
                                         final int finalColor = mColor;
 
-                                        //更新UI顯示介面
+                                        //隨時更新UI顯示介面
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
@@ -209,7 +228,6 @@ public class SerialPortActivity extends AppCompatActivity implements OnOpenSeria
 
         Log.i(TAG, "onCreate: openSerialPort = " + openSerialPort);
     }
-
 
     public static String byteArrayToHexString(final byte[] bytes) {
         StringBuilder sb = new StringBuilder();
@@ -305,14 +323,16 @@ public class SerialPortActivity extends AppCompatActivity implements OnOpenSeria
         cmdBytes[1] = (byte) 0x6A;
         cmdBytes[2] = (byte) 0x0F;
 
-        mSerialPortManager.sendBytes(cmdBytes);
+        mSerialPortManager.sendBytes(cmdBytes);//LED燈亮度
+    }
 
-        cmdBytes = new byte[3];
+    public void onSend1(View view) {
+        byte[] cmdBytes = new byte[3];
         cmdBytes[0] = (byte) 0xA5;
         cmdBytes[1] = (byte) 0x82;
         cmdBytes[2] = (byte) 0x27;
 
-        mSerialPortManager.sendBytes(cmdBytes);
+        mSerialPortManager.sendBytes(cmdBytes);//簡單模式
 //        EditText editTextSendContent = (EditText) findViewById(R.id.et_send_content);
 //        if (null == editTextSendContent) {
 //            return;

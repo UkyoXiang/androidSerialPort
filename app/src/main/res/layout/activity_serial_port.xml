@@ -1,42 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    tools:context="com.kongqw.serialport.SerialPortActivity">
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.kongqw.serialport.SerialPortActivity">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="目前顏色"
+            android:textSize="25sp" />
 
-            <EditText
-                android:id="@+id/et_send_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:gravity="top"
-                android:hint="请输入发送内容，内容转 byte[] 发送"
-                android:minLines="5" />
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="onSend"
-                android:text="发送" />
-
-            <Button
-                android:id="@+id/button_receive"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/button_receive"
+            android:layout_width="188dp"
+            android:layout_height="176dp"
+            android:layout_gravity="center_horizontal" />
 
 
-    </RelativeLayout>
-</ScrollView>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="簡單模式"
+            android:onClick="onSend1"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onSend"
+            android:text="LED燈" />
+    </LinearLayout>
+
+</RelativeLayout>
+
